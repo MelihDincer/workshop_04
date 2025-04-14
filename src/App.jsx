@@ -65,46 +65,59 @@ const getAverage = (array) =>
   array.reduce((sum, value) => sum + value, 0) / array.length;
 
 export default function App() {
+  const [movies, setMovies] = useState(movie_list);
+  const [selectedMovies, setSelectedMovies] = useState(seleted_movie_list);
+
   return (
     <>
-      <Nav />
-      <Main />
+      <Nav>
+        <Logo />
+        <Search />
+        <NavSearchResults movies={movies} />
+      </Nav>
+      <Main>
+      <div className="row mt-2">
+        <div className="col-md-9">
+          <ListContainer>
+            <MovieList movies={movies} />
+          </ListContainer>
+        </div>
+
+        <div className="col-md-3">
+          <ListContainer>
+          <MyListSummary selectedMovies={selectedMovies} />
+          <MyMovieList selectedMovies={selectedMovies} />
+          </ListContainer>
+        </div>
+      </div>
+      </Main>
     </>
   );
 }
 
-function Nav() {
+function Nav({children}) {
   return (
     <nav className="bg-primary text-white p-2">
       <div className="container">
         <div className="row align-items-center">
-          <Logo />
-          <Search />
-          <NavSearchResults />
+         {children}
         </div>
       </div>
     </nav>
   );
 }
 
-function Main() {
+function Main({children}) {
   return (
     <main className="container">
-      <div className="row mt-2">
-        <div className="col-md-9">
-          <MovieListContainer />
-        </div>
-
-        <div className="col-md-3">
-          <MyMovieListContainer />
-        </div>
-      </div>
+      {children}
     </main>
   );
 }
 
-function MovieListContainer() {
+function ListContainer({children}) {
   const [isOpen, setIsOpen] = useState(true);
+
   return (
     <div className="movie-list">
       <button
@@ -117,13 +130,12 @@ function MovieListContainer() {
           <i className="bi bi-chevron-up"></i>
         )}
       </button>
-      {isOpen && <MovieList />}
+      {isOpen && children}
     </div>
   );
 }
 
-function MovieList() {
-  const [movies, setMovies] = useState(movie_list);
+function MovieList({movies}) {
 
   return (
     <div className="row row-cols-1 row-cols-md-3 row-cols-xl-4 g-4">
@@ -151,31 +163,7 @@ function Movie({ movie }) {
   );
 }
 
-function MyMovieListContainer() {
-  const [selectedMovies, setSelectedMovies] = useState(seleted_movie_list);
-  const [isOpen2, setIsOpen2] = useState(true);
 
-  return (
-    <div className="movie-list">
-      <button
-        className="btn btn-sm btn-outline-primary mb-2"
-        onClick={() => setIsOpen2((val) => !val)}
-      >
-        {isOpen2 ? (
-          <i className="bi bi-chevron-down"></i>
-        ) : (
-          <i className="bi bi-chevron-up"></i>
-        )}
-      </button>
-      {isOpen2 && (
-        <>
-          <MyListSummary selectedMovies={selectedMovies} />
-          <MyMovieList selectedMovies={selectedMovies} />
-        </>
-      )}
-    </div>
-  );
-}
 
 function MyListSummary({ selectedMovies }) {
   const avgRating = getAverage(seleted_movie_list.map((movie) => movie.rating));
@@ -261,10 +249,10 @@ function Search() {
   );
 }
 
-function NavSearchResults() {
+function NavSearchResults({movies}) {
   return (
     <div className="col-4 text-end">
-      <strong>5</strong> Kayıt bulundu.
+      <strong>{movies.length}</strong> Kayıt bulundu.
     </div>
   );
 }
