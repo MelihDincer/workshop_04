@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const movie_list = [
   {
@@ -64,9 +64,34 @@ const seleted_movie_list = [
 const getAverage = (array) =>
   array.reduce((sum, value) => sum + value, 0) / array.length;
 
+const api_key = "8026a27df6698ce2cd7ba34fbb8bf5f8";
+const query = "father";
+
 export default function App() {
-  const [movies, setMovies] = useState(movie_list);
+  const [movies, setMovies] = useState([]);
   const [selectedMovies, setSelectedMovies] = useState(seleted_movie_list);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(function () {
+    async function getMovies() {
+      setLoading(true);
+      const response = await fetch(
+        `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`
+      );
+      const data = await response.json();
+      setMovies(data.results);
+      setLoading(false);
+    }
+    getMovies();
+
+    // fetch(
+    //   `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`
+    // )
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     setMovies(data.results), setSelectedMovies(data.results);
+    //   });
+  }, []);
 
   return (
     <>
@@ -76,46 +101,57 @@ export default function App() {
         <NavSearchResults movies={movies} />
       </Nav>
       <Main>
-      <div className="row mt-2">
-        <div className="col-md-9">
-          <ListContainer>
-            <MovieList movies={movies} />
-          </ListContainer>
-        </div>
+        <div className="row mt-2">
+          <div className="col-md-9">
+            <ListContainer>
+              {loading ? <Loading /> : <MovieList movies={movies} />}
+            </ListContainer>
+          </div>
 
-        <div className="col-md-3">
-          <ListContainer>
-          <MyListSummary selectedMovies={selectedMovies} />
-          <MyMovieList selectedMovies={selectedMovies} />
-          </ListContainer>
+          <div className="col-md-3">
+            <ListContainer>
+              <MyListSummary selectedMovies={selectedMovies} />
+              <MyMovieList selectedMovies={selectedMovies} />
+            </ListContainer>
+          </div>
         </div>
-      </div>
       </Main>
     </>
   );
 }
 
-function Nav({children}) {
+function Loading() {
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "61vh",
+      }}
+    >
+      <div className="spinner-border text-info" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  );
+}
+
+function Nav({ children }) {
   return (
     <nav className="bg-primary text-white p-2">
       <div className="container">
-        <div className="row align-items-center">
-         {children}
-        </div>
+        <div className="row align-items-center">{children}</div>
       </div>
     </nav>
   );
 }
 
-function Main({children}) {
-  return (
-    <main className="container">
-      {children}
-    </main>
-  );
+function Main({ children }) {
+  return <main className="container">{children}</main>;
 }
 
-function ListContainer({children}) {
+function ListContainer({ children }) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -135,12 +171,11 @@ function ListContainer({children}) {
   );
 }
 
-function MovieList({movies}) {
-
+function MovieList({ movies }) {
   return (
     <div className="row row-cols-1 row-cols-md-3 row-cols-xl-4 g-4">
-      {movies.map((movie) => (
-        <Movie movie={movie} key={movie.Id} />
+      {movies.map((movie, index) => (
+        <Movie movie={movie} key={index} />
       ))}
     </div>
   );
@@ -150,20 +185,27 @@ function Movie({ movie }) {
   return (
     <div className="col mb-2">
       <div className="card">
-        <img src={movie.Poster} alt={movie.Title} className="card-img-top" />
+        <img
+          src={
+            movie.poster_path
+              ? `https://image.tmdb.org/t/p/w500` + movie.poster_path
+              : "/img/noimage.png"
+          }
+          alt={movie.title}
+          className="card-img-top"
+          style={{ height: "300px" }}
+        />
         <div className="card-body">
-          <h6 className="card-title">{movie.Title}</h6>
+          <h6 className="card-title">{movie.title}</h6>
           <div>
             <i className="bi bi-calendar2-date me-1"></i>
-            <span>{movie.Year}</span>
+            <span>{movie.release_date.split("-")[0]}</span>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-
 
 function MyListSummary({ selectedMovies }) {
   const avgRating = getAverage(seleted_movie_list.map((movie) => movie.rating));
@@ -194,8 +236,8 @@ function MyListSummary({ selectedMovies }) {
 function MyMovieList({ selectedMovies }) {
   return (
     <>
-      {selectedMovies.map((movie) => (
-        <MyListMovie movie={movie} key={movie.Id} />
+      {selectedMovies.map((movie, index) => (
+        <MyListMovie movie={movie} key={index} />
       ))}
     </>
   );
@@ -207,9 +249,10 @@ function MyListMovie({ movie }) {
       <div className="row">
         <div className="col-4">
           <img
-            src={movie.Poster}
-            alt={movie.Title}
+            src={`https://image.tmdb.org/t/p/w500` + movie.poster_path}
+            alt={movie.title}
             className="img-fluid rounded-start"
+            style={{ height: "110px", width: "100%" }}
           />
         </div>
         <div className="col-8">
@@ -249,7 +292,7 @@ function Search() {
   );
 }
 
-function NavSearchResults({movies}) {
+function NavSearchResults({ movies }) {
   return (
     <div className="col-4 text-end">
       <strong>{movies.length}</strong> Kayıt bulundu.
