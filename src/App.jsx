@@ -62,24 +62,38 @@ const seleted_movie_list = [
 ];
 
 const getAverage = (array) =>
-  array.reduce((sum, value) => sum + value, 0) / array.length;
+  array.reduce((sum, value) => sum + value / array.length, 0);
 
 const api_key = "8026a27df6698ce2cd7ba34fbb8bf5f8";
-const query = "father";
 
 export default function App() {
+  const [query, setQuery] = useState("father");
   const [movies, setMovies] = useState([]);
   const [selectedMovies, setSelectedMovies] = useState(seleted_movie_list);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(function () {
     async function getMovies() {
-      setLoading(true);
-      const response = await fetch(
-        `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`
-      );
-      const data = await response.json();
-      setMovies(data.results);
+      try {
+        setLoading(true);
+        setError("");
+        const response = await fetch(
+          `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`
+        );
+        // url hatalı ise
+        if (!response.ok) {
+          throw new Error("Bilinmeyen bir hata oluştu");
+        }
+        const data = await response.json();
+
+        if (data.total_results === 0) {
+          throw new Error("Film bulunamadı.");
+        }
+        setMovies(data.results);
+      } catch (error) {
+        setError(error.message);
+      }
       setLoading(false);
     }
     getMovies();
@@ -97,14 +111,17 @@ export default function App() {
     <>
       <Nav>
         <Logo />
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <NavSearchResults movies={movies} />
       </Nav>
       <Main>
         <div className="row mt-2">
           <div className="col-md-9">
             <ListContainer>
-              {loading ? <Loading /> : <MovieList movies={movies} />}
+              {/* {loading ? <Loading /> : <MovieList movies={movies} />} */}
+              {loading && <Loading />}
+              {!loading && !error && <MovieList movies={movies} />}
+              {error && <ErrorMessage message={error} />}
             </ListContainer>
           </div>
 
@@ -118,6 +135,10 @@ export default function App() {
       </Main>
     </>
   );
+}
+
+function ErrorMessage({ message }) {
+  return <div className="alert alert-danger">{message}</div>;
 }
 
 function Loading() {
@@ -284,10 +305,16 @@ function Logo() {
   );
 }
 
-function Search() {
+function Search({ query, setQuery }) {
   return (
     <div className="col-4">
-      <input type="text" className="form-control" placeholder="Film ara..." />
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className="form-control"
+        placeholder="Film ara..."
+      />
     </div>
   );
 }
