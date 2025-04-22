@@ -73,39 +73,48 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(function () {
-    async function getMovies() {
-      try {
-        setLoading(true);
-        setError("");
-        const response = await fetch(
-          `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`
-        );
-        // url hatalı ise
-        if (!response.ok) {
-          throw new Error("Bilinmeyen bir hata oluştu");
-        }
-        const data = await response.json();
+  useEffect(
+    function () {
+      async function getMovies() {
+        try {
+          setLoading(true);
+          setError("");
+          const response = await fetch(
+            `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`
+          );
+          // url hatalı ise
+          if (!response.ok) {
+            throw new Error("Bilinmeyen bir hata oluştu");
+          }
+          const data = await response.json();
 
-        if (data.total_results === 0) {
-          throw new Error("Film bulunamadı.");
+          if (data.total_results === 0) {
+            throw new Error("Film bulunamadı.");
+          }
+          setMovies(data.results);
+        } catch (error) {
+          setError(error.message);
         }
-        setMovies(data.results);
-      } catch (error) {
-        setError(error.message);
+        setLoading(false);
       }
-      setLoading(false);
-    }
-    getMovies();
 
-    // fetch(
-    //   `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`
-    // )
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     setMovies(data.results), setSelectedMovies(data.results);
-    //   });
-  }, []);
+      if (query.length < 4) {
+        setMovies([]);
+        setError("");
+        return;
+      }
+      getMovies();
+
+      // fetch(
+      //   `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`
+      // )
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     setMovies(data.results), setSelectedMovies(data.results);
+      //   });
+    },
+    [query]
+  );
 
   return (
     <>
