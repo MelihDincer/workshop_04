@@ -29,9 +29,14 @@ export default function StarRating({
   maxRating = 5,
   size = 36,
   color = "#1e3799",
+  onRating,
 }) {
   const [rating, setRating] = useState(2);
   const [hoverRating, setHoverRating] = useState(0);
+  function handleSetRating(rating) {
+    setRating(rating);
+    onRating(rating);
+  }
 
   return (
     <div style={containerStyle}>
@@ -40,7 +45,7 @@ export default function StarRating({
           <Star
             key={i}
             fill={hoverRating ? hoverRating >= i + 1 : rating >= i + 1}
-            onRating={() => setRating(i + 1)}
+            onRating={() => handleSetRating(i + 1)}
             onMouseOver={() => setHoverRating(i + 1)}
             onMouseLeave={() => setHoverRating(0)}
             size={size}

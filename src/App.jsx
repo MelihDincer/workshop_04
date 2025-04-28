@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import StarRating from "./StarRating";
 
 const movie_list = [
   {
@@ -264,11 +265,22 @@ function MovieDetails({
 }) {
   const [movie, setMovie] = useState({});
   const [loading, setLoading] = useState(false);
+  const [userRating, setUserRating] = useState(null);
+  const selectedMovieUserRating = selectedMovies.find(
+    (m) => m.id === selectedMovieId
+  )?.userRating;
+
   const isAddedToList = selectedMovies
     .map((m) => m.id)
     .includes(selectedMovieId);
 
-  console.log(isAddedToList);
+  function handleAddToList() {
+    const newMovie = {
+      ...movie,
+      userRating,
+    };
+    onAddToMovieList(newMovie);
+  }
 
   useEffect(
     function () {
@@ -326,14 +338,27 @@ function MovieDetails({
                 ))}
               </p>
               {!isAddedToList ? (
-                <button
-                  className="btn btn-primary me-1"
-                  onClick={() => onAddToMovieList(movie)}
-                >
-                  Listeye Ekle
-                </button>
+                <>
+                  <div className="my-3">
+                    <StarRating
+                      maxRating={10}
+                      size={18}
+                      onRating={setUserRating}
+                    />
+                  </div>
+                  <button
+                    className="btn btn-primary me-1"
+                    onClick={() => handleAddToList(movie)}
+                  >
+                    Listeye Ekle
+                  </button>
+                </>
               ) : (
-                <p>Film listenizde</p>
+                <p>
+                  Film listenizde. <br /> Değerlendirme:
+                  <i className="bi bi-stars text-primary me-1"></i>
+                  {selectedMovieUserRating}
+                </p>
               )}
 
               <button className="btn btn-danger" onClick={onUnSelectMovie}>
@@ -383,6 +408,9 @@ function MyListSummary({ selectedMovies }) {
     selectedMovies.map((movie) => movie.vote_average)
   );
   const avgDuration = getAverage(selectedMovies.map((movie) => movie.runtime));
+  const avgUserRating = getAverage(
+    selectedMovies.map((movie) => movie.userRating)
+  );
   return (
     <div className="card mb-2">
       <div className="card-header">
@@ -392,6 +420,10 @@ function MyListSummary({ selectedMovies }) {
             <p>
               <i className="bi bi-star-fill text-warning me-1"></i>
               <span className="fs-6">{avgRating.toFixed(0)}</span>
+            </p>
+            <p>
+              <i className="bi bi-stars text-warning me-1"></i>
+              <span className="fs-6">{avgUserRating.toFixed(0)}</span>
             </p>
             <p className="ms-3">
               <i className="bi bi-stopwatch-fill text-danger me-1"></i>
