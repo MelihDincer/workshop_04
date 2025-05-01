@@ -75,6 +75,20 @@ export default function App() {
   const [error, setError] = useState("");
   const [selectedMovieId, setselectedMovieId] = useState(null);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [total_results, setTotal_Results] = useState(0);
+
+  function nextPage() {
+    console.log(currentPage + 1);
+    setCurrentPage(currentPage + 1);
+  }
+
+  function previousPage() {
+    console.log(currentPage - 1);
+    setCurrentPage(currentPage - 1);
+  }
+
   function handleselectedMovieId(id) {
     setselectedMovieId((selectedMovieId) =>
       id === selectedMovieId ? null : id
@@ -99,12 +113,12 @@ export default function App() {
       const controller = new AbortController();
       const signal = controller.signal;
 
-      async function getMovies() {
+      async function getMovies(pageNo) {
         try {
           setLoading(true);
           setError("");
           const response = await fetch(
-            `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}`,
+            `https://api.themoviedb.org/3/search/movie?api_key=${api_key}&query=${query}&page=${pageNo}`,
             { signal: signal }
           );
           // url hatalı ise
@@ -117,6 +131,8 @@ export default function App() {
             throw new Error("Film bulunamadı.");
           }
           setMovies(data.results);
+          setTotalPages(data.total_pages);
+          setTotal_Results(data.total_results);
         } catch (error) {
           if (error.name === "AbortError") {
             console.log("Aborted...");
@@ -132,7 +148,7 @@ export default function App() {
         setError("");
         return;
       }
-      getMovies();
+      getMovies(currentPage);
       return () => {
         controller.abort();
       };
@@ -144,7 +160,7 @@ export default function App() {
       //     setMovies(data.results), setselectedMovies(data.results);
       //   });
     },
-    [query]
+    [query, currentPage]
   );
 
   return (
@@ -152,7 +168,7 @@ export default function App() {
       <Nav>
         <Logo />
         <Search query={query} setQuery={setQuery} />
-        <NavSearchResults movies={movies} />
+        <NavSearchResults total_results={total_results} />
       </Nav>
       <Main>
         <div className="row mt-2">
@@ -161,11 +177,23 @@ export default function App() {
               {/* {loading ? <Loading /> : <MovieList movies={movies} />} */}
               {loading && <Loading />}
               {!loading && !error && (
-                <MovieList
-                  movies={movies}
-                  onSelectMovie={handleselectedMovieId}
-                  selectedMovieId={selectedMovieId}
-                />
+                <>
+                  {movies.length > 0 && (
+                    <>
+                      <MovieList
+                        movies={movies}
+                        onSelectMovie={handleselectedMovieId}
+                        selectedMovieId={selectedMovieId}
+                      />
+                      <Pagination
+                        nextPage={nextPage}
+                        previousPage={previousPage}
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                      />
+                    </>
+                  )}
+                </>
               )}
               {error && <ErrorMessage message={error} />}
             </ListContainer>
@@ -194,6 +222,40 @@ export default function App() {
         </div>
       </Main>
     </>
+  );
+}
+
+function Pagination({ nextPage, previousPage, currentPage, totalPages }) {
+  return (
+    <nav>
+      <ul className="pagination justify-content-center">
+        <li className={`page-item ${currentPage === 1 && "disabled"}`}>
+          <a className="page-link " href="#" onClick={previousPage}>
+            Previous
+          </a>
+        </li>
+        <li className="page-item">
+          <a className="page-link" href="#">
+            1
+          </a>
+        </li>
+        <li className="page-item">
+          <a className="page-link" href="#">
+            2
+          </a>
+        </li>
+        <li className="page-item">
+          <a className="page-link" href="#">
+            3
+          </a>
+        </li>
+        <li className={`page-item ${currentPage === totalPages && "disabled"}`}>
+          <a className="page-link" href="#" onClick={nextPage}>
+            Next
+          </a>
+        </li>
+      </ul>
+    </nav>
   );
 }
 
@@ -521,10 +583,10 @@ function Search({ query, setQuery }) {
   );
 }
 
-function NavSearchResults({ movies }) {
+function NavSearchResults({ total_results }) {
   return (
     <div className="col-4 text-end">
-      <strong>{movies.length}</strong> Kayıt bulundu.
+      <strong>{total_results}</strong> Kayıt bulundu.
     </div>
   );
 }
