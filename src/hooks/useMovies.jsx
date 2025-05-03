@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
+const api_key = "8026a27df6698ce2cd7ba34fbb8bf5f8";
 
 export default function useMovies(query) {
-  const api_key = "8026a27df6698ce2cd7ba34fbb8bf5f8";
-
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -75,5 +74,14 @@ export default function useMovies(query) {
     [query, currentPage]
   );
 
-  return { movies, loading, error };
+  return {
+    movies,
+    loading,
+    error,
+    currentPage,
+    totalPages,
+    total_results,
+    nextPage,
+    previousPage,
+  };
 }

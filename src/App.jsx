@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 import useMovies from "./hooks/useMovies";
+import useMovieDetails from "./hooks/useMovieDetails";
 
 const movie_list = [
   {
@@ -73,7 +74,16 @@ export default function App() {
   const [selectedMovies, setselectedMovies] = useState([]);
   const [selectedMovieId, setselectedMovieId] = useState(null);
 
-  const { movies, loading, error } = useMovies(query);
+  const {
+    movies,
+    loading,
+    error,
+    currentPage,
+    totalPages,
+    total_results,
+    nextPage,
+    previousPage,
+  } = useMovies(query);
 
   function handleselectedMovieId(id) {
     setselectedMovieId((selectedMovieId) =>
@@ -266,9 +276,9 @@ function MovieDetails({
   onAddToMovieList,
   selectedMovies,
 }) {
-  const [movie, setMovie] = useState({});
-  const [loading, setLoading] = useState(false);
   const [userRating, setUserRating] = useState(null);
+  const { movie, loading } = useMovieDetails(selectedMovieId);
+
   const selectedMovieUserRating = selectedMovies.find(
     (m) => m.id === selectedMovieId
   )?.userRating;
@@ -284,22 +294,6 @@ function MovieDetails({
     };
     onAddToMovieList(newMovie);
   }
-
-  useEffect(
-    function () {
-      async function getMovieDetails() {
-        setLoading(true);
-        const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${selectedMovieId}?api_key=${api_key}`
-        );
-        const data = await response.json();
-        setMovie(data);
-        setLoading(false);
-      }
-      getMovieDetails();
-    },
-    [selectedMovieId]
-  );
 
   return (
     <>
