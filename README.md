@@ -54,17 +54,20 @@ A single-page React.js application that allows users to search for movies and TV
     </td>
     <td align="center">
       <img src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png" alt="Bootstrap" width="40"/><br/>
-      <b>Bootstrap</b>
+      <b>Bootstrap 5.3</b>
     </td>
     <td align="center">
       <img src="https://cdn-icons-png.flaticon.com/512/8143/8143255.png" alt="LocalStorage" width="40"/><br/>
       <b>LocalStorage</b>
     </td>
     <td align="center">
-      <img src="https://cdn-icons-png.flaticon.com/512/2721/2721265.png" alt="Movie API" width="40"/><br/>
+      <img src="https://github.com/user-attachments/assets/2880c279-1ae6-4661-8b5c-084a4c689f41" alt="Movie API" width="40"/><br/>
       <b>Movie API</b>
     </td>
   </tr>
+
+
+  
 </table>
 " alt="LocalStorage" width="40"/><br/>
       <b>LocalStorage</b>
