@@ -53,7 +53,7 @@ A single-page React.js application that allows users to search for movies and TV
   </tr>
 </table>
 
-#### 🚀 Getting Started
+### 🚀 Getting Started
 
 1. Clone the repo  
    ```bash
