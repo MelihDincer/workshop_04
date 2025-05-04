@@ -32,9 +32,6 @@ A single-page React.js application that allows users to search for movies and TV
 ![image](https://github.com/user-attachments/assets/2b1293a9-0bf6-4165-966a-7a19a37d606c)
 
 ### 🛠️ Tech Stack
-
-
-
 <table>
   <tr>
     <td align="center">
@@ -46,7 +43,7 @@ A single-page React.js application that allows users to search for movies and TV
       <b>Bootstrap 5.3</b>
     </td>
     <td align="center">
-      <img src="https://cdn-icons-png.flaticon.com/512/8143/8143255.png" alt="LocalStorage" width="40"/><br/>
+      <img src="https://github.com/user-attachments/assets/d8808c30-837e-49b2-a9f1-09a590da8cd0" alt="LocalStorage" width="40"/><br/>
       <b>LocalStorage</b>
     </td>
     <td align="center">
@@ -55,7 +52,6 @@ A single-page React.js application that allows users to search for movies and TV
     </td>
   </tr>
 </table>
-
 
 #### 🚀 Getting Started
 
