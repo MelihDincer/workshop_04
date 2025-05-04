@@ -1,77 +1,79 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import StarRating from "./StarRating";
 import useMovies from "./hooks/useMovies";
 import useMovieDetails from "./hooks/useMovieDetails";
+import useLocalStorage from "./hooks/useLocalStorage";
 
-const movie_list = [
-  {
-    Id: "769",
-    Title: "GoodFellas",
-    Year: "1990",
-    Poster:
-      "https://image.tmdb.org/t/p/original/aKuFiU82s5ISJpGZp7YkIr3kCUd.jpg",
-  },
-  {
-    Id: "120",
-    Title: "The Lord of the Rings",
-    Year: "2001",
-    Poster:
-      "https://image.tmdb.org/t/p/original/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg",
-  },
-  {
-    Id: "27205",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://image.tmdb.org/t/p/original/ljsZTbVsrQSqZgWeep2B1QiDKuh.jpg",
-  },
-  {
-    Id: "105",
-    Title: "Back to the Future",
-    Year: "1985",
-    Poster:
-      "https://image.tmdb.org/t/p/original/fNOH9f1aA7XRTzl1sAOx9iF553Q.jpg",
-  },
-];
+// const movie_list = [
+//   {
+//     Id: "769",
+//     Title: "GoodFellas",
+//     Year: "1990",
+//     Poster:
+//       "https://image.tmdb.org/t/p/original/aKuFiU82s5ISJpGZp7YkIr3kCUd.jpg",
+//   },
+//   {
+//     Id: "120",
+//     Title: "The Lord of the Rings",
+//     Year: "2001",
+//     Poster:
+//       "https://image.tmdb.org/t/p/original/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg",
+//   },
+//   {
+//     Id: "27205",
+//     Title: "Inception",
+//     Year: "2010",
+//     Poster:
+//       "https://image.tmdb.org/t/p/original/ljsZTbVsrQSqZgWeep2B1QiDKuh.jpg",
+//   },
+//   {
+//     Id: "105",
+//     Title: "Back to the Future",
+//     Year: "1985",
+//     Poster:
+//       "https://image.tmdb.org/t/p/original/fNOH9f1aA7XRTzl1sAOx9iF553Q.jpg",
+//   },
+// ];
 
-const seleted_movie_list = [
-  {
-    Id: "27205",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://image.tmdb.org/t/p/original/ljsZTbVsrQSqZgWeep2B1QiDKuh.jpg",
-    duration: 120,
-    rating: 8.4,
-  },
-  {
-    Id: "769",
-    Title: "GoodFellas",
-    Year: "1990",
-    Poster:
-      "https://image.tmdb.org/t/p/original/aKuFiU82s5ISJpGZp7YkIr3kCUd.jpg",
-    duration: 110,
-    rating: 9.2,
-  },
-  {
-    Id: "105",
-    Title: "Back to the Future",
-    Year: "1985",
-    Poster:
-      "https://image.tmdb.org/t/p/original/fNOH9f1aA7XRTzl1sAOx9iF553Q.jpg",
-    duration: 125,
-    rating: 8.8,
-  },
-];
+// const seleted_movie_list = [
+//   {
+//     Id: "27205",
+//     Title: "Inception",
+//     Year: "2010",
+//     Poster:
+//       "https://image.tmdb.org/t/p/original/ljsZTbVsrQSqZgWeep2B1QiDKuh.jpg",
+//     duration: 120,
+//     rating: 8.4,
+//   },
+//   {
+//     Id: "769",
+//     Title: "GoodFellas",
+//     Year: "1990",
+//     Poster:
+//       "https://image.tmdb.org/t/p/original/aKuFiU82s5ISJpGZp7YkIr3kCUd.jpg",
+//     duration: 110,
+//     rating: 9.2,
+//   },
+//   {
+//     Id: "105",
+//     Title: "Back to the Future",
+//     Year: "1985",
+//     Poster:
+//       "https://image.tmdb.org/t/p/original/fNOH9f1aA7XRTzl1sAOx9iF553Q.jpg",
+//     duration: 125,
+//     rating: 8.8,
+//   },
+// ];
 
 const getAverage = (array) =>
   array.reduce((sum, value) => sum + value / array.length, 0);
 
-const api_key = "8026a27df6698ce2cd7ba34fbb8bf5f8";
-
 export default function App() {
   const [query, setQuery] = useState("");
-  const [selectedMovies, setselectedMovies] = useState([]);
+  const [selectedMovies, setselectedMovies] = useLocalStorage(
+    [],
+    "selectedMovies"
+  );
   const [selectedMovieId, setselectedMovieId] = useState(null);
 
   const {
