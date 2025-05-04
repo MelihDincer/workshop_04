@@ -33,11 +33,12 @@ A single-page React.js application that allows users to search for movies and TV
 
 ### 🛠️ Tech Stack
 
-- **Frontend**: React.js
+- **Frontend**: ![React](https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg) **React.js** 
 - **API**: [TMDb API](https://www.themoviedb.org/)
 - **State Management**: React Hooks
 - **Persistence**: Browser LocalStorage
-- **Styling**: Bootstrap 5.3
+- **Styling**: ![Bootstrap](https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png) **Bootstrap**  
+- **Storage**: ![LocalStorage Icon](https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_Chrome_icon_%282011%29.png) **LocalStorage**  
 
 #### 🚀 Getting Started
 
