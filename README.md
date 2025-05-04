@@ -33,12 +33,29 @@ A single-page React.js application that allows users to search for movies and TV
 
 ### 🛠️ Tech Stack
 
-- **Frontend**: ![React](https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg) **React.js** 
-- **API**: [TMDb API](https://www.themoviedb.org/)
-- **State Management**: React Hooks
-- **Persistence**: Browser LocalStorage
-- **Styling**: ![Bootstrap](https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png) **Bootstrap**  
-- **Storage**: ![LocalStorage Icon](https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_Chrome_icon_%282011%29.png) **LocalStorage**  
+## 🛠️ Tech Stack
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" width="40"/><br/>
+      <b>React.js</b>
+    </td>
+    <td align="center">
+      <img src="https://getbootstrap.com/docs/5.3/assets/brand/bootstrap-logo-shadow.png" alt="Bootstrap" width="40"/><br/>
+      <b>Bootstrap</b>
+    </td>
+    <td align="center">
+      <img src="https://cdn-icons-png.flaticon.com/512/8143/8143255.png" alt="LocalStorage" width="40"/><br/>
+      <b>LocalStorage</b>
+    </td>
+    <td align="center">
+      <img src="https://cdn-icons-png.flaticon.com/512/2721/2721265.png" alt="Movie API" width="40"/><br/>
+      <b>Movie API</b>
+    </td>
+  </tr>
+</table>
+
 
 #### 🚀 Getting Started
 
